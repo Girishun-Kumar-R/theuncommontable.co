@@ -31,6 +31,19 @@
 <link rel="preload" href="fonts/newsreader-opsz-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/schibsted-grotesk-wght.woff2" as="font" type="font/woff2" crossorigin>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","@id":"https://theuncommontable.co/#organization","name":"The Uncommon Table","slogan":"Beyond Network, Beyond Boundaries.","url":"https://theuncommontable.co/","logo":"https://theuncommontable.co/brand/emblem-512.png","email":"team@theuncommontable.co","description":"A private, invite-only founder community in Bengaluru for founders actively building and running businesses across industries.","address":{"@type":"PostalAddress","addressLocality":"Bengaluru","addressRegion":"Karnataka","addressCountry":"IN"},"sameAs":["https://www.linkedin.com/company/144190179"]},{"@context":"https://schema.org","@type":"Event","name":"The Uncommon Table — Edition 01","description":"A closed-door, invite-only session for founders from different industries who are actively building and running businesses. Registration is subject to approval on Luma.","startDate":"2026-12-12T16:00:00+05:30","endDate":"2026-12-12T18:00:00+05:30","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Indiranagar, Bengaluru","address":{"@type":"PostalAddress","addressLocality":"Bengaluru","addressRegion":"Karnataka","addressCountry":"IN"}},"image":["https://theuncommontable.co/brand/og.jpg"],"url":"https://theuncommontable.co/#invitation","organizer":{"@id":"https://theuncommontable.co/#organization","@type":"Organization","name":"The Uncommon Table","url":"https://theuncommontable.co/"}}]</script>
+<script>
+/* Analytics: Google Analytics 4 + Microsoft Clarity. Live domain only (not local previews), never on /admin. */
+(function (h) {
+  if (!/(^|\.)theuncommontable\.co$/.test(h)) return;
+  var ga = document.createElement('script'); ga.async = true; ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-4D8Q12M8CM';
+  document.head.appendChild(ga);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', 'G-4D8Q12M8CM', { allow_google_signals: false, allow_ad_personalization_signals: false });
+  (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); }; t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, 'clarity', 'script', 'zk2phiqa5n');
+})(location.hostname);
+</script>
 <script>(function(d){d.classList.add('js');try{if(sessionStorage.getItem('ut_seen')||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('ready','no-curtain')}catch(e){}})(document.documentElement)</script>
 <style>
 /*
@@ -627,6 +640,11 @@ footer{border-top:1px solid var(--line)}
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root = document.documentElement;
 
+  /* Analytics events: no personal data is ever sent, only what was clicked. */
+  var track = function (name, params) {
+    try { if (window.gtag) window.gtag('event', name, params || {}); if (window.clarity) window.clarity('event', name); } catch (e) {}
+  };
+
   /* Opening curtain: lifts once the hero photo is ready (at most ~1.4s), once per visit. */
   function lift() { if (!root.classList.contains('ready')) { root.classList.add('ready'); try { sessionStorage.setItem('ut_seen', '1'); } catch (e) {} } }
   if (!root.classList.contains('ready')) {
@@ -654,6 +672,9 @@ footer{border-top:1px solid var(--line)}
     if (!utm.utm_content) url.searchParams.set('utm_content', a.getAttribute('data-register'));
     Object.keys(utm).forEach(function (k) { if (!url.searchParams.has(k)) url.searchParams.set(k, utm[k]); });
     a.setAttribute('href', url.toString());
+  });
+  document.querySelectorAll('a[data-register]').forEach(function (a) {
+    a.addEventListener('click', function () { track('register_click', { button_location: a.getAttribute('data-register') }); });
   });
 
   /* Reveal sections as they arrive. */
@@ -755,6 +776,7 @@ footer{border-top:1px solid var(--line)}
       dlg.classList.remove('closing');
       dlg.showModal();
       if (lenis) lenis.stop();
+      track('subscribe_open', { open_from: from ? (from.closest('footer') ? 'footer' : 'section') : 'link' });
       var first = done.hidden ? form.elements.name : done.querySelector('h2');
       setTimeout(function () { first.focus(); }, 60);
     };
@@ -831,6 +853,7 @@ footer{border-top:1px solid var(--line)}
         linkedin: li.value, source: form.elements.source.value });
       sent
         .then(function () {
+          track('generate_lead', { lead_source: form.elements.source.value });
           document.getElementById('done-email').textContent = form.elements.email.value;
           step.hidden = true; done.hidden = false;
           done.querySelector('h2').focus();
@@ -847,7 +870,9 @@ footer{border-top:1px solid var(--line)}
 
   /* Calendar file: public area only; the address is shared privately through Luma. */
   var ics = document.getElementById('ics');
+  document.querySelectorAll('a[href*="calendar.google.com"]').forEach(function (a) { a.addEventListener('click', function () { track('add_to_calendar', { calendar: 'google' }); }); });
   if (ics) ics.addEventListener('click', function () {
+    track('add_to_calendar', { calendar: 'ics' });
     var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//The Uncommon Table//Edition 01//EN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
       'UID:edition-01@theuncommontable.co', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''),
       'DTSTART:20261212T103000Z', 'DTEND:20261212T123000Z', 'SUMMARY:The Uncommon Table, Edition 01',
