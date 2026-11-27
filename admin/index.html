@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subscribers · The Uncommon Table</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0D0F11">
+<link rel="icon" href="/brand/favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:"Newsreader";src:url(/fonts/newsreader-opsz-normal.woff2) format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Schibsted Grotesk";src:url(/fonts/schibsted-grotesk-wght.woff2) format("woff2");font-weight:400 900;font-display:swap}
+:root{--ink:#0D0F11;--ink-2:#141618;--ink-3:#1B1E21;--cream:#F5EEE3;--cream-dim:#D9D1C5;--paper:#F3EADC;--mute:#A5A5A5;--line:#292929;--line-2:#3B3B3B;--ember:#ED681D;--ember-hover:#F27D3A;--serif:"Newsreader",Georgia,serif;--sans:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--ink);color:var(--cream)}
+body{margin:0;font:1rem/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+[hidden]{display:none!important}
+.emb{height:2.2rem;width:auto;display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.6rem;padding:.55rem 1rem;border:1px solid var(--line-2);background:transparent;font-size:.9rem;font-weight:500;white-space:nowrap;transition:background-color .2s,border-color .2s}
+.btn:hover{border-color:var(--cream-dim)}
+.btn-primary{background:var(--ember);border-color:var(--ember);color:var(--ink)}
+.btn-primary:hover{background:var(--ember-hover);border-color:var(--ember-hover)}
+/* gate */
+.gate{min-height:100vh;display:grid;place-items:center;padding:2rem;text-align:center}
+.gate .box{max-width:26rem}
+.gate .emb{height:3rem;margin:0 auto}
+.gate h1{margin:1.4rem 0 .5rem;font:420 2.4rem/1.05 var(--serif);letter-spacing:-.02em}
+.gate p{margin:0;color:var(--cream-dim)}
+.gate .btn{margin-top:1.75rem;min-height:3rem;padding-inline:1.4rem}
+.gate .who{margin-top:1rem;font-size:.85rem;color:var(--mute)}
+.gate .msg{margin-top:1rem;font-size:.9rem;color:#F4A26F}
+/* app */
+.top{position:sticky;top:0;z-index:5;background:rgb(13 15 17/.96);border-bottom:1px solid var(--line)}
+.top .in{max-width:90rem;margin:0 auto;padding:.9rem clamp(1rem,3vw,2rem);display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.25rem}
+.brand{display:flex;align-items:center;gap:.85rem;margin-right:auto}
+.brand h1{margin:0;font:420 1.5rem/1.1 var(--serif)}
+.brand .count{font:500 .85rem/1 var(--sans);color:var(--mute);margin-left:.4rem}
+.search{min-height:2.6rem;width:min(18rem,100%);padding:.5rem .75rem;background:var(--ink-2);border:1px solid var(--line-2)}
+.search::placeholder{color:var(--mute)}
+.me{font-size:.8rem;color:var(--mute)}
+main{max-width:90rem;margin:0 auto;padding:1.25rem clamp(1rem,3vw,2rem) 4rem}
+.note{margin:0 0 1rem;font-size:.85rem;color:var(--mute)}
+.wrap{overflow-x:auto;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:.7rem .85rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--ink-3);font-size:.75rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+tbody tr:hover{background:var(--ink-2)}
+td.n{color:var(--mute);width:3rem}
+td.d{white-space:nowrap;color:var(--cream-dim)}
+td a{text-decoration:none;border-bottom:1px solid rgb(245 238 227/.25)}
+td a:hover{border-color:var(--cream)}
+td.li a{display:inline-block;max-width:22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+td.s{color:var(--mute)}
+td.x{width:3rem;text-align:right}
+.del{border:0;background:none;padding:.2rem .4rem;color:var(--mute);font-size:1.1rem;line-height:1}
+.del:hover{color:var(--ember)}
+.empty{padding:3rem 1rem;text-align:center;color:var(--mute)}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--paper);color:var(--ink);padding:.7rem 1rem;font-size:.9rem;box-shadow:0 10px 30px rgb(0 0 0/.5)}
+</style>
+</head>
+<body>
+
+<section class="gate" id="gate">
+  <div class="box">
+    <svg class="emb" viewBox="0 0 370 277" aria-hidden="true" focusable="false"><defs><linearGradient id="eal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EDE4D8"/><stop offset="1" stop-color="#3B3A37"/></linearGradient><linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9631C"/><stop offset="1" stop-color="#5E2A0B"/></linearGradient></defs><polygon points="5,64 184.5,6 314,47.5 265,63 184.5,37.5 104,64 175,87 175,253 130,271 130,111 5,70" fill="#F5EEE3"/><polygon points="130,111 175,125.8 175,253 130,271" fill="#E4D8C9"/><polygon points="314,47.5 364.5,64 364.5,70 241,110 241,195 195,180 195,85.5 265,63" fill="#ED681D"/><polygon points="36,113 100,134 100,224 36,203" fill="url(#eal)"/><polygon points="333,113 269,134 269,224 333,203" fill="url(#ear)"/></svg>
+    <h1>Subscribers</h1>
+    <p id="gate-text">Sign in with an approved Google account to see and export the subscriber list.</p>
+    <button class="btn btn-primary" id="signin" type="button" hidden>Sign in with Google</button>
+    <button class="btn" id="signout-gate" type="button" hidden>Use a different account</button>
+    <p class="who" id="gate-who"></p>
+    <p class="msg" id="gate-msg" role="alert"></p>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="in">
+      <div class="brand"><svg class="emb" viewBox="0 0 370 277" aria-hidden="true" focusable="false"><defs><linearGradient id="ea2l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EDE4D8"/><stop offset="1" stop-color="#3B3A37"/></linearGradient><linearGradient id="ea2r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9631C"/><stop offset="1" stop-color="#5E2A0B"/></linearGradient></defs><polygon points="5,64 184.5,6 314,47.5 265,63 184.5,37.5 104,64 175,87 175,253 130,271 130,111 5,70" fill="#F5EEE3"/><polygon points="130,111 175,125.8 175,253 130,271" fill="#E4D8C9"/><polygon points="314,47.5 364.5,64 364.5,70 241,110 241,195 195,180 195,85.5 265,63" fill="#ED681D"/><polygon points="36,113 100,134 100,224 36,203" fill="url(#ea2l)"/><polygon points="333,113 269,134 269,224 333,203" fill="url(#ea2r)"/></svg><h1>Subscribers<span class="count" id="count"></span></h1></div>
+      <input class="search" id="q" type="search" placeholder="Search name, email, phone" aria-label="Search subscribers">
+      <button class="btn btn-primary" id="xlsx" type="button">Download Excel</button>
+      <button class="btn" id="csv" type="button">Download CSV</button>
+      <button class="btn" id="signout" type="button">Sign out</button>
+    </div>
+  </header>
+  <main>
+    <p class="note">Signed in as <span id="me"></span>. Newest first. Updates live as people subscribe.</p>
+    <div class="wrap">
+      <table>
+        <thead><tr><th>#</th><th>Date (IST)</th><th>Name</th><th>Phone</th><th>Email</th><th>LinkedIn</th><th>Source</th><th><span class="sr" hidden>Delete</span></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="empty" id="empty" hidden>No subscribers yet.</p>
+    </div>
+  </main>
+</div>
+<p class="toast" id="toast" role="status" hidden></p>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js';
+import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js';
+
+const app = initializeApp({"apiKey":"AIzaSyAYbZfujXt83Y7Wp4oJvEt6tTJr1XbGO18","authDomain":"the-uncommon-table.firebaseapp.com","projectId":"the-uncommon-table","storageBucket":"the-uncommon-table.firebasestorage.app","messagingSenderId":"611623293754","appId":"1:611623293754:web:1159e9f36fe05424ae7603"});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = (id) => document.getElementById(id);
+let rows = [], unsub = null;
+
+const fmt = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+const when = (r) => r.createdAt ? fmt.format(r.createdAt.toDate()) : '';
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const safeUrl = (u) => /^https:\/\/([a-z]{2,3}\.)?(www\.)?linkedin\.com\//i.test(u || '') ? u : '';
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2600); }
+
+function gate(text, { signin = false, other = false, who = '', msg = '' } = {}) {
+  $('app').hidden = true; $('gate').hidden = false;
+  $('gate-text').textContent = text;
+  $('signin').hidden = !signin; $('signout-gate').hidden = !other;
+  $('gate-who').textContent = who; $('gate-msg').textContent = msg;
+}
+
+function render() {
+  const q = $('q').value.trim().toLowerCase();
+  const list = q ? rows.filter((r) => [r.name, r.email, r.phone, r.linkedin, r.source].some((v) => String(v || '').toLowerCase().includes(q))) : rows;
+  $('count').textContent = q ? `${list.length} of ${rows.length}` : String(rows.length);
+  $('empty').hidden = list.length > 0;
+  $('empty').textContent = rows.length ? 'No matches.' : 'No subscribers yet.';
+  $('rows').innerHTML = list.map((r, i) => {
+    const li = safeUrl(r.linkedin);
+    return `<tr><td class="n">${rows.length - rows.indexOf(r)}</td><td class="d">${esc(when(r))}</td><td>${esc(r.name)}</td>`
+      + `<td><a href="tel:${esc(String(r.phone || '').replace(/[^+\d]/g, ''))}">${esc(r.phone)}</a></td>`
+      + `<td><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></td>`
+      + `<td class="li">${li ? `<a href="${esc(li)}" target="_blank" rel="noopener noreferrer">${esc(li.replace(/^https:\/\/(www\.)?/i, ''))}</a>` : esc(r.linkedin)}</td>`
+      + `<td class="s">${esc(r.source)}</td><td class="x"><button class="del" type="button" data-id="${esc(r.id)}" aria-label="Delete ${esc(r.name)}" title="Delete">×</button></td></tr>`;
+  }).join('');
+}
+
+function table() {
+  const head = ['Date (IST)', 'Name', 'Phone', 'Email', 'LinkedIn', 'Source'];
+  return [head, ...rows.map((r) => [when(r), r.name || '', r.phone || '', r.email || '', r.linkedin || '', r.source || ''])];
+}
+function save(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+const stamp = () => new Date().toISOString().slice(0, 10);
+
+/* CSV: values that a spreadsheet would read as a formula get a leading apostrophe. */
+$('csv').addEventListener('click', () => {
+  const cell = (v) => { v = String(v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
+  const csv = '﻿' + table().map((r) => r.map(cell).join(',')).join('\r\n');
+  save(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `uncommon-table-subscribers-${stamp()}.csv`);
+});
+
+/* Excel: a minimal .xlsx where every cell is stored as text, so phone numbers stay exactly as typed. */
+$('xlsx').addEventListener('click', () => save(xlsx(table()), `uncommon-table-subscribers-${stamp()}.xlsx`));
+function xlsx(data) {
+  const x = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+  const col = (i) => { let s = ''; i++; while (i) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  const widths = [22, 26, 20, 32, 44, 12];
+  const sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    + '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'
+    + '<cols>' + widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('') + '</cols><sheetData>'
+    + data.map((r, ri) => `<row r="${ri + 1}">` + r.map((v, ci) => `<c r="${col(ci)}${ri + 1}" t="inlineStr"${ri === 0 ? ' s="1"' : ''}><is><t xml:space="preserve">${x(v)}</t></is></c>`).join('') + '</row>').join('')
+    + '</sheetData></worksheet>';
+  const files = {
+    '[Content_Types].xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+    '_rels/.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+    'xl/workbook.xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Subscribers" sheetId="1" r:id="rId1"/></sheets></workbook>',
+    'xl/_rels/workbook.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
+    'xl/styles.xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>',
+    'xl/worksheets/sheet1.xml': sheet
+  };
+  return new Blob([zip(files)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+function zip(files) {
+  const enc = new TextEncoder(), parts = [], dir = [];
+  let offset = 0;
+  const crcTable = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = (b) => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = crcTable[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const u16 = (v) => [v & 255, (v >>> 8) & 255], u32 = (v) => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  for (const [name, text] of Object.entries(files)) {
+    const nb = enc.encode(name), data = enc.encode(text), crc = crc32(data);
+    const common = [...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nb.length), ...u16(0)];
+    const local = new Uint8Array([...u32(0x04034b50), ...common]);
+    parts.push(local, nb, data);
+    dir.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...common, ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]), nb);
+    offset += local.length + nb.length + data.length;
+  }
+  const dirLen = dir.reduce((s, b) => s + b.length, 0), n = Object.keys(files).length;
+  const end = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(n), ...u16(n), ...u32(dirLen), ...u32(offset), ...u16(0)]);
+  return new Blob([...parts, ...dir, end]);
+}
+
+$('q').addEventListener('input', render);
+$('rows').addEventListener('click', async (e) => {
+  const b = e.target.closest('.del'); if (!b) return;
+  const r = rows.find((x) => x.id === b.dataset.id); if (!r) return;
+  if (!confirm(`Delete ${r.name} (${r.email})? This cannot be undone.`)) return;
+  try { await deleteDoc(doc(db, 'subscribers', r.id)); toast('Deleted.'); } catch (err) { toast('Could not delete: ' + err.code); }
+});
+$('signin').addEventListener('click', async () => {
+  $('gate-msg').textContent = '';
+  try { await signInWithPopup(auth, new GoogleAuthProvider().setCustomParameters({ prompt: 'select_account' })); }
+  catch (err) { if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') $('gate-msg').textContent = 'Sign-in did not complete (' + err.code + ').'; }
+});
+const out = () => { if (unsub) { unsub(); unsub = null; } signOut(auth); };
+$('signout').addEventListener('click', out);
+$('signout-gate').addEventListener('click', out);
+
+onAuthStateChanged(auth, (user) => {
+  if (unsub) { unsub(); unsub = null; }
+  rows = [];
+  if (!user) { gate('Sign in with an approved Google account to see and export the subscriber list.', { signin: true }); return; }
+  gate('Loading…', { who: user.email });
+  unsub = onSnapshot(query(collection(db, 'subscribers'), orderBy('createdAt', 'desc')), (snap) => {
+    rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    $('me').textContent = user.email;
+    $('gate').hidden = true; $('app').hidden = false;
+    render();
+  }, (err) => {
+    if (err.code === 'permission-denied') gate('This Google account does not have access to the subscriber list.', { other: true, who: 'Signed in as ' + user.email });
+    else gate('Could not load the list.', { other: true, who: user.email, msg: err.code || String(err) });
+  });
+});
+</script>
+</body>
+</html>
